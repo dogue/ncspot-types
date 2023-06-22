@@ -1,0 +1,17 @@
+[package]
+name = "ncspot-types"
+version = "0.1.0"
+edition = "2021"
+authors = ["dogue"]
+description = "A set of types for deserializing JSON output from the ncspot terminal Spotify client"
+license = "MIT"
+repository = "https://github.com/dogue/ncspot-types"
+homepage = "https://github.com/dogue/ncspot-types"
+documentation = "https://docs.rs/ncspot-types"
+readme = "README.md"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+chrono = { version = "0.4.26", features = ["serde"] }
+serde = { version = "1.0.164", features = ["derive"] }
