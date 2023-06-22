@@ -1,6 +1,20 @@
 use chrono::offset::Utc;
 use chrono::DateTime;
 use serde::Deserialize;
+use std::time::Duration;
+
+#[derive(Debug, Deserialize)]
+pub struct Status {
+    pub mode: Mode,
+    pub playable: Playable,
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(untagged)]
+pub enum Playable {
+    Track(Track),
+    Episode(Episode),
+}
 
 #[derive(Debug, Deserialize)]
 pub enum Mode {
@@ -17,33 +31,16 @@ pub enum Mode {
     Stopped,
 }
 
-// #[derive(Debug, Deserialize)]
-// pub struct PlayingMode {
-//     pub secs_since_epoch: usize,
-//     pub nanos_since_epoch: usize,
-// }
-
-// #[derive(Debug, Deserialize)]
-// pub struct PausedMode {
-//     pub secs: usize,
-//     pub nanos: usize,
-// }
-
+#[serde_with::serde_as]
 #[derive(Debug, Deserialize)]
-pub enum PlayableType {
-    Track,
-}
-
-#[derive(Debug, Deserialize)]
-pub struct Playable {
-    #[serde(rename = "type")]
-    pub playable_type: PlayableType,
+pub struct Track {
     pub id: String,
     pub uri: String,
     pub title: String,
     pub track_number: usize,
     pub disc_number: usize,
-    pub duration: usize,
+    #[serde_as(as = "serde_with::DurationMilliSeconds<u64>")]
+    pub duration: Duration,
     pub artists: Vec<String>,
     pub artist_ids: Vec<String>,
     pub album: String,
@@ -55,8 +52,16 @@ pub struct Playable {
     pub list_index: usize,
 }
 
+#[serde_with::serde_as]
 #[derive(Debug, Deserialize)]
-pub struct Track {
-    pub mode: Mode,
-    pub playable: Playable,
+pub struct Episode {
+    pub id: String,
+    pub uri: String,
+    pub duration: Duration,
+    pub name: String,
+    pub description: String,
+    pub release_date: DateTime<Utc>,
+    pub cover_url: Option<String>,
+    pub added_at: Option<DateTime<Utc>>,
+    pub list_index: usize,
 }
